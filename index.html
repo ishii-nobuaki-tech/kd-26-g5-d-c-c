@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- 検索エンジンにインデックスさせず、リンクも辿らせず、キャッシュも残させない設定 -->
+  <meta name="robots" content="noindex, nofollow, noarchive, nosnippet">
+  <meta name="googlebot" content="noindex, nofollow">
+  
+  <!-- 
+    【重要】SharePoint（Microsoft 365）での埋め込み許可
+    Edgeなどのブラウザで「login.microsoftonline.com 接続が拒否されました」という
+    エラーが出る場合、サードパーティCookieのブロックや、クロスドメインでの
+    認証（Looker StudioのGoogle認証とSharePointのMicrosoft認証の競合）が原因です。
+    
+    Content-Security-Policy (CSP) を設定し、SharePointのドメインからの
+    フレーム埋め込み（frame-ancestors）を明示的に許可します。
+  -->
+  <meta http-equiv="Content-Security-Policy" content="frame-ancestors 'self' https://*.sharepoint.com https://*.microsoftonline.com;">
+
+  <!-- タイトルを空にしてブラウザのタブで目立たなくする -->
+  <title></title>
+
+  <style>
+    /* 余白をなくし、画面全体に広げる設定 */
+    body, html {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      background-color: #ffffff;
+    }
+    /* 初期状態は非表示（真っ白） */
+    #dashboard-container {
+      display: none;
+      width: 100%;
+      height: 100%;
+    }
+    /* iframeを画面いっぱいに表示し、枠線を消す */
+    iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+      display: block;
+    }
+  </style>
+</head>
+<body>
+  <div id="dashboard-container">
+    <!-- srcのURLを実際のLooker StudioのURLに変更してください -->
+    <iframe
+      src="https://datastudio.google.com/embed/reporting/6bc9bd35-d796-4727-85c9-343e289a09bf/page/FGflF"
+      allowfullscreen
+      frameborder="0"
+    ></iframe>
+  </div>
+
+  <script>
+    /*
+      【確実な直接アクセス対策：合言葉（URLパラメータ）方式】
+      SharePointの特殊なiframe環境では、セキュリティの都合上
+      「自分がiframeの中にいる」と正しく判定できないケースがあります。
+      そのため、URLに特定の「合言葉（?key=sp）」が含まれている場合のみ
+      ダッシュボードを表示する、という最も確実な方式に変更しました。
+    */
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.get('key') === 'sp') {
+      // 合言葉が含まれていれば表示する
+      document.getElementById('dashboard-container').style.display = 'block';
+    }
+  </script>
+</body>
+</html>
+
